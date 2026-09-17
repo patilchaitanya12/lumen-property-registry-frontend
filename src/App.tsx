@@ -4,6 +4,7 @@ import { AppShell } from './components/layout/AppShell'
 import { Dashboard } from './pages/Dashboard'
 import { History } from './pages/History'
 import { Locations } from './pages/Locations'
+import { LocationProfile } from './pages/LocationProfile'
 import { Orders } from './pages/Orders'
 import { OwnerProfile } from './pages/OwnerProfile'
 import { Owners } from './pages/Owners'
@@ -33,6 +34,7 @@ function App() {
           />
 
           <Route path="/locations" element={<Locations />} />
+          <Route path="/locations/:locationId" element={<LocationProfile />} />
           <Route path="/history" element={<History />} />
           <Route path="/orders" element={<Orders />} />
         </Routes>
