@@ -1,6 +1,7 @@
 import {
   ArrowRight,
   Building2,
+  MapPin,
   Search,
 } from 'lucide-react'
 import { useEffect, useState } from 'react'
@@ -61,28 +62,30 @@ export function Units() {
   const totalPages = Math.ceil(total / 25)
 
   return (
-    <div className="space-y-8">
-      <section className="flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
-        <div>
+    <div className="space-y-6 sm:space-y-8">
+      {/* Header */}
+      <section className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between sm:gap-5">
+        <div className="min-w-0">
           <div className="text-[11px] font-medium uppercase tracking-[0.14em] text-[var(--muted)]">
             Registry
           </div>
 
-          <h1 className="mt-2 text-3xl font-semibold tracking-tight">
+          <h1 className="mt-2 text-2xl font-semibold tracking-tight sm:text-3xl">
             Properties
           </h1>
 
-          <p className="mt-2 text-sm text-[var(--muted)]">
-            Physical units registered in the property
-            registry.
+          <p className="mt-2 max-w-xl text-sm leading-6 text-[var(--muted)]">
+            Physical units registered in the
+            property registry.
           </p>
         </div>
 
-        <div className="text-sm text-[var(--muted)]">
+        <div className="shrink-0 text-sm text-[var(--muted)]">
           {total.toLocaleString()} properties
         </div>
       </section>
 
+      {/* Search */}
       <div className="relative">
         <Search
           size={17}
@@ -100,7 +103,9 @@ export function Units() {
         />
       </div>
 
-      <div className="overflow-visible rounded-3xl border border-[var(--border)] bg-[var(--surface)]">
+      {/* Property list */}
+      <div className="overflow-visible rounded-2xl border border-[var(--border)] bg-[var(--surface)] sm:rounded-3xl">
+        {/* Desktop header */}
         <div className="hidden grid-cols-[minmax(240px,1.5fr)_140px_minmax(180px,1fr)_140px_50px] gap-4 border-b border-[var(--border)] px-5 py-3 text-[10px] font-semibold uppercase tracking-[0.12em] text-[var(--muted)] md:grid">
           <span>Property ID</span>
           <span>Unit</span>
@@ -110,18 +115,18 @@ export function Units() {
         </div>
 
         {loading ? (
-          <div className="space-y-1 p-3">
+          <div className="space-y-2 p-3">
             {Array.from({ length: 8 }).map(
               (_, index) => (
                 <div
                   key={index}
-                  className="h-16 animate-pulse rounded-2xl bg-[var(--background)]"
+                  className="h-24 animate-pulse rounded-2xl bg-[var(--background)] md:h-16"
                 />
               ),
             )}
           </div>
         ) : units.length === 0 ? (
-          <div className="p-12 text-center">
+          <div className="p-10 text-center sm:p-12">
             <Building2
               size={24}
               className="mx-auto text-[var(--muted)]"
@@ -140,7 +145,7 @@ export function Units() {
             {units.map((unit) => (
               <div
                 key={unit.unit_id}
-                className="group relative grid cursor-pointer grid-cols-1 gap-3 border-b border-[var(--border)] px-5 py-4 transition last:border-0 hover:bg-[var(--background)] md:grid-cols-[minmax(240px,1.5fr)_140px_minmax(180px,1fr)_140px_50px] md:items-center md:gap-4"
+                className="group relative cursor-pointer border-b border-[var(--border)] px-4 py-4 transition last:border-0 hover:bg-[var(--background)] sm:px-5 md:grid md:grid-cols-[minmax(240px,1.5fr)_140px_minmax(180px,1fr)_140px_50px] md:items-center md:gap-4"
                 onMouseEnter={() =>
                   setHoveredUnit(unit.unit_id)
                 }
@@ -153,42 +158,81 @@ export function Units() {
                   )
                 }
               >
-                <div className="flex items-center gap-3">
-                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[var(--primary-soft)] text-[var(--primary)]">
-                    <Building2 size={16} />
-                  </div>
-
-                  <div className="min-w-0">
-                    <div className="truncate font-mono text-sm font-medium">
-                      {unit.property_id}
+                {/* Property identity */}
+                <div className="min-w-0 pr-8">
+                  <div className="flex items-start gap-3">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[var(--primary-soft)] text-[var(--primary)]">
+                      <Building2 size={16} />
                     </div>
 
-                    <div className="mt-1 text-xs text-[var(--muted)] md:hidden">
-                      Unit {unit.unit_number || '—'}
+                    <div className="min-w-0 flex-1">
+                      <div className="break-all font-mono text-xs font-medium leading-5 sm:text-sm">
+                        {unit.property_id}
+                      </div>
+
+                      <div className="mt-1 text-xs text-[var(--muted)] md:hidden">
+                        Unit {unit.unit_number || '—'}
+                      </div>
                     </div>
                   </div>
                 </div>
 
+                {/* Unit code desktop */}
                 <div className="hidden font-mono text-xs text-[var(--muted)] md:block">
                   {unit.unit_code || 'Not available'}
                 </div>
 
+                {/* Location desktop */}
                 <div className="hidden truncate text-xs text-[var(--muted)] md:block">
                   {unit.location_id || 'Not available'}
                 </div>
 
+                {/* Type desktop */}
                 <div className="hidden md:block">
                   <span className="rounded-full border border-[var(--border)] px-2.5 py-1 text-[11px]">
-                    {unit.property_type ||
-                      'Unknown'}
+                    {unit.property_type || 'Unknown'}
                   </span>
                 </div>
 
+                {/* Mobile details */}
+                <div className="mt-4 grid grid-cols-1 gap-2 pl-[52px] md:hidden min-[400px]:grid-cols-2">
+                  <div className="min-w-0 rounded-xl bg-[var(--background)] p-3">
+                    <div className="text-[10px] font-semibold uppercase tracking-wider text-[var(--muted)]">
+                      Location
+                    </div>
+
+                    <div className="mt-1 flex min-w-0 items-start gap-1.5">
+                      <MapPin
+                        size={12}
+                        className="mt-0.5 shrink-0 text-[var(--muted)]"
+                      />
+
+                      <span className="break-all text-[11px] leading-4 text-[var(--muted)]">
+                        {unit.location_id ||
+                          'Not available'}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="min-w-0 rounded-xl bg-[var(--background)] p-3">
+                    <div className="text-[10px] font-semibold uppercase tracking-wider text-[var(--muted)]">
+                      Type
+                    </div>
+
+                    <div className="mt-1 break-words text-xs font-medium">
+                      {unit.property_type ||
+                        'Unknown'}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Arrow */}
                 <ArrowRight
-                  size={16}
-                  className="absolute right-5 top-1/2 -translate-y-1/2 text-[var(--muted)] transition-transform group-hover:translate-x-1 md:static md:translate-y-0"
+                  size={17}
+                  className="absolute right-4 top-5 text-[var(--muted)] transition-transform group-hover:translate-x-1 sm:right-5 md:static md:translate-y-0"
                 />
 
+                {/* Desktop quick peek */}
                 {hoveredUnit === unit.unit_id && (
                   <div
                     className="absolute left-8 top-[calc(100%-8px)] z-30 hidden w-80 rounded-2xl border border-[var(--border)] bg-[var(--surface-elevated)] p-4 shadow-2xl md:block"
@@ -197,12 +241,12 @@ export function Units() {
                     }
                   >
                     <div className="flex items-start gap-3">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[var(--primary-soft)] text-[var(--primary)]">
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[var(--primary-soft)] text-[var(--primary)]">
                         <Building2 size={18} />
                       </div>
 
                       <div className="min-w-0">
-                        <div className="font-mono text-sm font-semibold">
+                        <div className="break-all font-mono text-sm font-semibold">
                           {unit.property_id}
                         </div>
 
@@ -219,7 +263,7 @@ export function Units() {
                           Unit code
                         </div>
 
-                        <div className="mt-1 truncate text-xs font-medium">
+                        <div className="mt-1 break-all text-xs font-medium">
                           {unit.unit_code ||
                             'Not available'}
                         </div>
@@ -230,16 +274,20 @@ export function Units() {
                           Type
                         </div>
 
-                        <div className="mt-1 text-xs font-medium">
+                        <div className="mt-1 break-words text-xs font-medium">
                           {unit.property_type ||
                             'Not available'}
                         </div>
                       </div>
                     </div>
 
-                    <div className="mt-3 flex items-center gap-2 text-[11px] text-[var(--muted)]">
-                      <span>Location:</span>
-                      <span className="truncate font-mono">
+                    <div className="mt-3 flex min-w-0 items-start gap-2 text-[11px] text-[var(--muted)]">
+                      <MapPin
+                        size={12}
+                        className="mt-0.5 shrink-0"
+                      />
+
+                      <span className="break-all font-mono">
                         {unit.location_id ||
                           'Not available'}
                       </span>
@@ -253,9 +301,10 @@ export function Units() {
                           `/properties/${encodeURIComponent(unit.unit_id)}`,
                         )
                       }}
-                      className="mt-3 flex w-full items-center gap-2 rounded-xl px-2 py-2 text-xs font-medium text-[var(--primary)] transition hover:bg-[var(--primary-soft)]"
+                      className="mt-3 flex min-h-10 w-full items-center gap-2 rounded-xl px-2 py-2 text-xs font-medium text-[var(--primary)] transition hover:bg-[var(--primary-soft)]"
                     >
                       <Building2 size={14} />
+
                       <span>
                         Open property
                       </span>
@@ -273,29 +322,32 @@ export function Units() {
         )}
       </div>
 
+      {/* Pagination */}
       {totalPages > 1 && (
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="text-xs text-[var(--muted)]">
             Page {page} of {totalPages}
           </div>
 
-          <div className="flex gap-2">
+          <div className="grid grid-cols-2 gap-2 sm:flex">
             <button
+              type="button"
               disabled={page === 1}
               onClick={() =>
                 setPage((value) => value - 1)
               }
-              className="rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2 text-sm disabled:cursor-not-allowed disabled:opacity-40"
+              className="min-h-10 rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2 text-sm transition hover:bg-[var(--background)] disabled:cursor-not-allowed disabled:opacity-40"
             >
               Previous
             </button>
 
             <button
+              type="button"
               disabled={page === totalPages}
               onClick={() =>
                 setPage((value) => value + 1)
               }
-              className="rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2 text-sm disabled:cursor-not-allowed disabled:opacity-40"
+              className="min-h-10 rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2 text-sm transition hover:bg-[var(--background)] disabled:cursor-not-allowed disabled:opacity-40"
             >
               Next
             </button>

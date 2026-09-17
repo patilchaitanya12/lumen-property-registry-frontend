@@ -40,20 +40,17 @@ export function GlobalSearch({
   onClose,
 }: GlobalSearchProps) {
   const navigate = useNavigate()
-  const inputRef =
-    useRef<HTMLInputElement>(null)
+  const inputRef = useRef<HTMLInputElement>(null)
 
   const [query, setQuery] = useState('')
-  const [results, setResults] =
-    useState<SearchResponse>({
-      owners: [],
-      units: [],
-      orders: [],
-    })
+  const [results, setResults] = useState<SearchResponse>({
+    owners: [],
+    units: [],
+    orders: [],
+  })
 
   const [loading, setLoading] = useState(false)
-  const [selectedIndex, setSelectedIndex] =
-    useState(0)
+  const [selectedIndex, setSelectedIndex] = useState(0)
 
   const allResults = [
     ...results.owners,
@@ -72,20 +69,21 @@ export function GlobalSearch({
     })
     setSelectedIndex(0)
 
-    window.setTimeout(() => {
+    const timer = window.setTimeout(() => {
       inputRef.current?.focus()
     }, 20)
+
+    return () => window.clearTimeout(timer)
   }, [open])
 
   useEffect(() => {
     if (!open) return
 
-    const handleKeyDown = (
-      event: KeyboardEvent,
-    ) => {
+    const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
         event.preventDefault()
         onClose()
+        return
       }
 
       if (event.key === 'ArrowDown') {
@@ -112,29 +110,16 @@ export function GlobalSearch({
         allResults[selectedIndex]
       ) {
         event.preventDefault()
-        openResult(
-          allResults[selectedIndex],
-        )
+        openResult(allResults[selectedIndex])
       }
     }
 
-    window.addEventListener(
-      'keydown',
-      handleKeyDown,
-    )
+    window.addEventListener('keydown', handleKeyDown)
 
     return () => {
-      window.removeEventListener(
-        'keydown',
-        handleKeyDown,
-      )
+      window.removeEventListener('keydown', handleKeyDown)
     }
-  }, [
-    open,
-    onClose,
-    allResults,
-    selectedIndex,
-  ])
+  }, [open, onClose, allResults, selectedIndex])
 
   useEffect(() => {
     if (!open) return
@@ -151,8 +136,7 @@ export function GlobalSearch({
       return
     }
 
-    const controller =
-      new AbortController()
+    const controller = new AbortController()
 
     const timer = window.setTimeout(() => {
       setLoading(true)
@@ -182,9 +166,7 @@ export function GlobalSearch({
     }
   }, [query, open])
 
-  const openResult = (
-    result: SearchResult,
-  ) => {
+  const openResult = (result: SearchResult) => {
     onClose()
 
     if (result.type === 'owner') {
@@ -210,19 +192,19 @@ export function GlobalSearch({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-start justify-center bg-black/40 px-4 pt-[12vh] backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-start justify-center bg-black/40 px-2.5 pt-[7vh] backdrop-blur-sm sm:px-4 sm:pt-[12vh]"
       onMouseDown={onClose}
     >
       <div
-        className="w-full max-w-2xl overflow-hidden rounded-3xl border border-[var(--border)] bg-[var(--surface)] shadow-2xl"
+        className="w-full max-w-2xl overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--surface)] shadow-2xl sm:rounded-3xl"
         onMouseDown={(event) =>
           event.stopPropagation()
         }
       >
         {/* Input */}
-        <div className="flex h-16 items-center gap-3 border-b border-[var(--border)] px-5">
+        <div className="flex min-h-15 items-center gap-2.5 border-b border-[var(--border)] px-3.5 sm:h-16 sm:gap-3 sm:px-5">
           <Search
-            size={20}
+            size={19}
             className="shrink-0 text-[var(--muted)]"
           />
 
@@ -237,29 +219,38 @@ export function GlobalSearch({
           />
 
           {loading && (
-            <div className="h-4 w-4 animate-spin rounded-full border-2 border-[var(--border)] border-t-[var(--primary)]" />
+            <div className="h-4 w-4 shrink-0 animate-spin rounded-full border-2 border-[var(--border)] border-t-[var(--primary)]" />
           )}
 
           {query && !loading && (
             <button
               onClick={() => setQuery('')}
-              className="rounded-lg p-1.5 text-[var(--muted)] hover:bg-[var(--background)]"
+              className="shrink-0 rounded-lg p-1.5 text-[var(--muted)] hover:bg-[var(--background)]"
+              aria-label="Clear search"
             >
               <X size={14} />
             </button>
           )}
 
-          <kbd className="hidden items-center gap-1 rounded-lg border border-[var(--border)] px-2 py-1 text-[10px] text-[var(--muted)] sm:flex">
+          <kbd className="hidden shrink-0 items-center gap-1 rounded-lg border border-[var(--border)] px-2 py-1 text-[10px] text-[var(--muted)] sm:flex">
             <Command size={9} />
             K
           </kbd>
+
+          <button
+            onClick={onClose}
+            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-[var(--muted)] hover:bg-[var(--background)] sm:hidden"
+            aria-label="Close search"
+          >
+            <X size={16} />
+          </button>
         </div>
 
         {/* Initial state */}
         {!query.trim() && (
-          <div className="px-5 py-10 text-center">
-            <div className="mx-auto flex h-11 w-11 items-center justify-center rounded-2xl bg-[var(--primary-soft)] text-[var(--primary)]">
-              <Search size={19} />
+          <div className="px-4 py-8 text-center sm:px-5 sm:py-10">
+            <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-2xl bg-[var(--primary-soft)] text-[var(--primary)] sm:h-11 sm:w-11">
+              <Search size={18} />
             </div>
 
             <div className="mt-4 text-sm font-medium">
@@ -270,7 +261,7 @@ export function GlobalSearch({
               Find an owner, property or order.
             </div>
 
-            <div className="mt-5 flex justify-center gap-2">
+            <div className="mt-5 flex flex-wrap justify-center gap-2 px-2">
               <Hint label="Owner ID" />
               <Hint label="Property ID" />
               <Hint label="Name" />
@@ -282,7 +273,7 @@ export function GlobalSearch({
         {query.trim() &&
           !loading &&
           allResults.length === 0 && (
-            <div className="px-5 py-12 text-center">
+            <div className="px-4 py-10 text-center sm:px-5 sm:py-12">
               <div className="text-sm font-medium">
                 No results found
               </div>
@@ -296,7 +287,7 @@ export function GlobalSearch({
         {/* Results */}
         {query.trim() &&
           allResults.length > 0 && (
-            <div className="max-h-[60vh] overflow-y-auto">
+            <div className="max-h-[60vh] overflow-y-auto sm:max-h-[65vh]">
               {results.owners.length > 0 && (
                 <ResultGroup
                   title="Owners"
@@ -371,17 +362,24 @@ export function GlobalSearch({
           )}
 
         {/* Footer */}
-        <div className="flex items-center justify-between border-t border-[var(--border)] px-5 py-3 text-[10px] text-[var(--muted)]">
-          <div className="flex gap-4">
+        <div className="flex flex-wrap items-center justify-between gap-2 border-t border-[var(--border)] px-3.5 py-2.5 text-[9px] text-[var(--muted)] sm:px-5 sm:py-3 sm:text-[10px]">
+          <div className="flex gap-3 sm:gap-4">
             <span>↑↓ Navigate</span>
             <span>↵ Open</span>
           </div>
 
           <button
             onClick={onClose}
-            className="hover:text-[var(--foreground)]"
+            className="hidden hover:text-[var(--foreground)] sm:block"
           >
             Esc to close
+          </button>
+
+          <button
+            onClick={onClose}
+            className="sm:hidden"
+          >
+            Close
           </button>
         </div>
       </div>
@@ -412,7 +410,7 @@ function ResultGroup({
 }) {
   return (
     <section>
-      <div className="flex items-center gap-2 border-b border-[var(--border)] px-5 py-3 text-[10px] font-semibold uppercase tracking-wider text-[var(--muted)]">
+      <div className="flex items-center gap-2 border-b border-[var(--border)] px-3.5 py-3 text-[10px] font-semibold uppercase tracking-wider text-[var(--muted)] sm:px-5">
         {icon}
         {title}
       </div>
@@ -436,35 +434,35 @@ function ResultRow({
   return (
     <button
       onClick={onClick}
-      className={`group flex w-full items-center gap-3 px-5 py-3.5 text-left transition ${
+      className={`group flex w-full min-w-0 items-center gap-2.5 px-3.5 py-3 text-left transition sm:gap-3 sm:px-5 sm:py-3.5 ${
         selected
           ? 'bg-[var(--primary-soft)]'
           : 'hover:bg-[var(--background)]'
       }`}
     >
-      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[var(--primary-soft)] text-[var(--primary)]">
+      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-[var(--primary-soft)] text-[var(--primary)] sm:h-9 sm:w-9">
         {owner ? (
-          <UserRound size={16} />
+          <UserRound size={15} />
         ) : (
-          <Building2 size={16} />
+          <Building2 size={15} />
         )}
       </div>
 
       <div className="min-w-0 flex-1">
-        <div className="truncate text-sm font-medium">
+        <div className="break-words text-xs font-medium sm:text-sm">
           {result.name ||
             result.unit_code ||
             result.id}
         </div>
 
-        <div className="mt-1 truncate font-mono text-[10px] text-[var(--muted)]">
+        <div className="mt-1 break-all font-mono text-[9px] leading-4 text-[var(--muted)] sm:text-[10px]">
           {result.id}
         </div>
       </div>
 
       <ArrowRight
-        size={15}
-        className="shrink-0 text-[var(--muted)] transition-transform group-hover:translate-x-1"
+        size={14}
+        className="shrink-0 text-[var(--muted)] transition-transform group-hover:translate-x-1 sm:h-[15px] sm:w-[15px]"
       />
     </button>
   )
