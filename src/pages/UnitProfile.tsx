@@ -25,6 +25,20 @@ interface Location {
   building_name: string | null
 }
 
+interface UnitHistory {
+  history_id: string
+  owner_id: string
+  owner_name: string
+  start_date: string | null
+  end_date: string | null
+  source_order_id: string | null
+}
+
+interface UnitHistoryResponse {
+  unit_id: string
+  items: UnitHistory[]
+}
+
 interface UnitDetail {
   unit_id: string
   property_id: string
@@ -70,6 +84,7 @@ export function UnitProfile() {
 
   const [unit, setUnit] =
     useState<UnitDetail | null>(null)
+  const [history, setHistory] = useState<UnitHistory[]>([])
 
   const [loading, setLoading] =
     useState(true)
@@ -79,13 +94,22 @@ export function UnitProfile() {
 
     setLoading(true)
 
-    apiFetch<UnitDetail>(
-      `/api/units/${encodeURIComponent(decodedUnitId)}`,
-    )
-      .then(setUnit)
+    const encodedId = encodeURIComponent(decodedUnitId)
+
+    Promise.all([
+      apiFetch<UnitDetail>(
+        `/api/units/${encodedId}`,
+      ),
+      apiFetch<UnitHistoryResponse>(
+        `/api/units/${encodedId}/history`,
+      ),
+    ])
+      .then(([unitData, historyData]) => {
+        setUnit(unitData)
+        setHistory(historyData.items)
+      })
       .finally(() => setLoading(false))
   }, [decodedUnitId])
-
   if (loading) {
     return (
       <div className="space-y-6">
@@ -323,6 +347,109 @@ export function UnitProfile() {
                   </span>
                 </div>
               </button>
+            ))}
+          </div>
+        )}
+      </section>
+
+      {/* Ownership History */}
+      <section>
+        <div className="mb-3 flex flex-col gap-1 px-1 min-[400px]:flex-row min-[400px]:items-end min-[400px]:justify-between min-[400px]:gap-3">
+          <div className="min-w-0">
+            <h2 className="text-sm font-semibold">
+              Ownership History
+            </h2>
+
+            <p className="mt-1 text-xs leading-5 text-[var(--muted)]">
+              Historical ownership records linked to this unit.
+            </p>
+          </div>
+
+          <span className="shrink-0 text-xs text-[var(--muted)]">
+            {history.length} record
+            {history.length === 1 ? '' : 's'}
+          </span>
+        </div>
+
+        {history.length === 0 ? (
+          <div className="rounded-2xl border border-dashed border-[var(--border)] p-8 text-center sm:rounded-3xl sm:p-10">
+            <Calendar
+              size={24}
+              className="mx-auto text-[var(--muted)]"
+            />
+
+            <div className="mt-3 text-sm font-medium">
+              No ownership history recorded
+            </div>
+
+            <div className="mt-1 text-xs text-[var(--muted)]">
+              Historical ownership events are not available for this unit.
+            </div>
+          </div>
+        ) : (
+          <div className="relative space-y-3">
+            {history.map((record, index) => (
+              <div
+                key={record.history_id}
+                className="relative flex min-w-0 gap-3 sm:gap-4"
+              >
+                <div className="flex shrink-0 flex-col items-center">
+                  <div className="mt-1 flex h-9 w-9 items-center justify-center rounded-full bg-[var(--primary-soft)] text-[var(--primary)]">
+                    <UserRound size={16} />
+                  </div>
+
+                  {index < history.length - 1 && (
+                    <div className="mt-2 h-full min-h-6 w-px bg-[var(--border)]" />
+                  )}
+                </div>
+
+                <div className="min-w-0 flex-1 rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-4 sm:p-5">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      navigate(
+                        `/owners/${encodeURIComponent(record.owner_id)}`,
+                      )
+                    }
+                    className="group flex min-w-0 max-w-full items-start gap-2 text-left"
+                  >
+                    <div className="min-w-0 flex-1">
+                      <div className="break-words text-sm font-semibold">
+                        {record.owner_name}
+                      </div>
+
+                      <div className="mt-1 break-all font-mono text-[10px] leading-4 text-[var(--muted)]">
+                        {record.owner_id}
+                      </div>
+                    </div>
+
+                    <ArrowUpRight
+                      size={15}
+                      className="mt-0.5 shrink-0 text-[var(--muted)] transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                    />
+                  </button>
+
+                  <div className="mt-4 flex min-w-0 items-start gap-1.5 text-xs leading-5 text-[var(--muted)]">
+                    <Calendar
+                      size={13}
+                      className="mt-0.5 shrink-0"
+                    />
+
+                    <span className="break-words">
+                      {dateRange(
+                        record.start_date,
+                        record.end_date,
+                      )}
+                    </span>
+                  </div>
+
+                  {record.source_order_id && (
+                    <div className="mt-3 break-all font-mono text-[10px] leading-4 text-[var(--muted)]">
+                      Source order: {record.source_order_id}
+                    </div>
+                  )}
+                </div>
+              </div>
             ))}
           </div>
         )}
