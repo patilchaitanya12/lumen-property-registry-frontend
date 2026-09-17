@@ -73,22 +73,23 @@ export function Dashboard() {
   }, [])
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 sm:space-y-8">
       <section>
-        <p className="text-sm text-[var(--muted)]">
+        <p className="text-sm leading-6 text-[var(--muted)]">
           A single view of your property
           registry.
         </p>
       </section>
 
       {error && (
-        <div className="rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+        <div className="rounded-2xl border border-red-200 bg-red-50 p-4 text-sm leading-6 text-red-700">
           Unable to connect to the registry
           API.
         </div>
       )}
 
-      <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      {/* Registry metrics */}
+      <section className="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4">
         {cards.map(
           ({
             key,
@@ -97,16 +98,16 @@ export function Dashboard() {
           }) => (
             <div
               key={key}
-              className="group rounded-3xl border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[0_1px_2px_rgba(0,0,0,0.03)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg"
+              className="group min-w-0 rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-4 shadow-[0_1px_2px_rgba(0,0,0,0.03)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg sm:rounded-3xl sm:p-5"
             >
               <div className="flex items-start justify-between">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[var(--primary-soft)] text-[var(--primary)]">
-                  <Icon size={18} />
+                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[var(--primary-soft)] text-[var(--primary)] sm:h-10 sm:w-10">
+                  <Icon size={17} />
                 </div>
               </div>
 
-              <div className="mt-7">
-                <div className="text-3xl font-semibold tracking-tight">
+              <div className="mt-5 sm:mt-7">
+                <div className="truncate text-2xl font-semibold tracking-tight sm:text-3xl">
                   {data
                     ? formatNumber(
                         data[key],
@@ -114,7 +115,7 @@ export function Dashboard() {
                     : '—'}
                 </div>
 
-                <div className="mt-1 text-sm text-[var(--muted)]">
+                <div className="mt-1 truncate text-xs text-[var(--muted)] sm:text-sm">
                   {label}
                 </div>
               </div>
@@ -123,20 +124,21 @@ export function Dashboard() {
         )}
       </section>
 
+      {/* Registry overview */}
       <section className="grid gap-4 lg:grid-cols-2">
-        <div className="rounded-3xl border border-[var(--border)] bg-[var(--surface)] p-6">
+        <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-5 sm:rounded-3xl sm:p-6">
           <div className="text-sm font-semibold">
             Ownership
           </div>
 
-          <p className="mt-1 text-sm text-[var(--muted)]">
+          <p className="mt-1 text-sm leading-6 text-[var(--muted)]">
             Relationship overview across the
             registry.
           </p>
 
-          <div className="mt-8 grid grid-cols-2 gap-3">
+          <div className="mt-6 grid grid-cols-1 gap-3 min-[400px]:grid-cols-2 sm:mt-8">
             <div className="rounded-2xl bg-[var(--background)] p-4">
-              <div className="text-2xl font-semibold">
+              <div className="text-xl font-semibold sm:text-2xl">
                 {data
                   ? formatNumber(
                       data.ownership_relationships,
@@ -150,7 +152,7 @@ export function Dashboard() {
             </div>
 
             <div className="rounded-2xl bg-[var(--background)] p-4">
-              <div className="text-2xl font-semibold">
+              <div className="text-xl font-semibold sm:text-2xl">
                 {data
                   ? data.multi_owner_units
                   : '—'}
@@ -163,17 +165,17 @@ export function Dashboard() {
           </div>
         </div>
 
-        <div className="rounded-3xl border border-[var(--border)] bg-[var(--surface)] p-6">
+        <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-5 sm:rounded-3xl sm:p-6">
           <div className="text-sm font-semibold">
             Data model
           </div>
 
-          <p className="mt-1 text-sm text-[var(--muted)]">
+          <p className="mt-1 text-sm leading-6 text-[var(--muted)]">
             The registry keeps physical units and
             owners as independent identities.
           </p>
 
-          <div className="mt-6 flex flex-wrap items-center gap-2 text-xs">
+          <div className="mt-5 flex flex-wrap items-center gap-2 sm:mt-6">
             {[
               'Owner',
               'Unit',
@@ -182,7 +184,7 @@ export function Dashboard() {
             ].map((item) => (
               <span
                 key={item}
-                className="rounded-full border border-[var(--border)] px-3 py-1.5"
+                className="rounded-full border border-[var(--border)] px-3 py-1.5 text-xs"
               >
                 {item}
               </span>
