@@ -60,28 +60,30 @@ export function Owners() {
   const totalPages = Math.ceil(total / 25)
 
   return (
-    <div className="space-y-8">
-      <section className="flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
-        <div>
+    <div className="space-y-6 sm:space-y-8">
+      {/* Header */}
+      <section className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between sm:gap-5">
+        <div className="min-w-0">
           <div className="text-[11px] font-medium uppercase tracking-[0.14em] text-[var(--muted)]">
             Registry
           </div>
 
-          <h1 className="mt-2 text-3xl font-semibold tracking-tight">
+          <h1 className="mt-2 text-2xl font-semibold tracking-tight sm:text-3xl">
             Owners
           </h1>
 
-          <p className="mt-2 text-sm text-[var(--muted)]">
+          <p className="mt-2 max-w-xl text-sm leading-6 text-[var(--muted)]">
             People and organizations connected to
             properties.
           </p>
         </div>
 
-        <div className="text-sm text-[var(--muted)]">
+        <div className="shrink-0 text-sm text-[var(--muted)]">
           {total.toLocaleString()} owners
         </div>
       </section>
 
+      {/* Search */}
       <div className="relative">
         <Search
           size={17}
@@ -99,7 +101,9 @@ export function Owners() {
         />
       </div>
 
-      <div className="overflow-visible rounded-3xl border border-[var(--border)] bg-[var(--surface)]">
+      {/* Owner list */}
+      <div className="overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--surface)] sm:rounded-3xl">
+        {/* Desktop header */}
         <div className="hidden grid-cols-[minmax(220px,1.5fr)_minmax(220px,1fr)_140px_50px] gap-4 border-b border-[var(--border)] px-5 py-3 text-[10px] font-semibold uppercase tracking-[0.12em] text-[var(--muted)] md:grid">
           <span>Owner</span>
           <span>Owner ID</span>
@@ -113,13 +117,13 @@ export function Owners() {
               (_, index) => (
                 <div
                   key={index}
-                  className="h-16 animate-pulse rounded-2xl bg-[var(--background)]"
+                  className="h-20 animate-pulse rounded-2xl bg-[var(--background)] sm:h-16"
                 />
               ),
             )}
           </div>
         ) : owners.length === 0 ? (
-          <div className="p-12 text-center">
+          <div className="p-10 text-center sm:p-12">
             <UserRound
               size={24}
               className="mx-auto text-[var(--muted)]"
@@ -138,7 +142,7 @@ export function Owners() {
             {owners.map((owner) => (
               <div
                 key={owner.owner_id}
-                className="group relative grid cursor-pointer grid-cols-1 gap-3 border-b border-[var(--border)] px-5 py-4 transition last:border-0 hover:bg-[var(--background)] md:grid-cols-[minmax(220px,1.5fr)_minmax(220px,1fr)_140px_50px] md:items-center md:gap-4"
+                className="group relative cursor-pointer border-b border-[var(--border)] px-4 py-4 transition last:border-0 hover:bg-[var(--background)] sm:px-5 md:grid md:grid-cols-[minmax(220px,1.5fr)_minmax(220px,1fr)_140px_50px] md:items-center md:gap-4"
                 onMouseEnter={() =>
                   setHoveredOwner(owner.owner_id)
                 }
@@ -151,12 +155,13 @@ export function Owners() {
                   )
                 }
               >
-                <div className="flex items-center gap-3">
-                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[var(--primary-soft)] text-[var(--primary)]">
+                {/* Owner */}
+                <div className="flex min-w-0 items-start gap-3 pr-8 md:items-center md:pr-0">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[var(--primary-soft)] text-[var(--primary)]">
                     <UserRound size={16} />
                   </div>
 
-                  <div className="min-w-0">
+                  <div className="min-w-0 flex-1">
                     <div className="truncate text-sm font-medium">
                       {owner.name}
                     </div>
@@ -165,13 +170,20 @@ export function Owners() {
                       {owner.owner_type ||
                         'Unknown type'}
                     </div>
+
+                    {/* Owner ID on mobile */}
+                    <div className="mt-2 break-all font-mono text-[10px] leading-4 text-[var(--muted)] md:hidden">
+                      {owner.owner_id}
+                    </div>
                   </div>
                 </div>
 
+                {/* Owner ID desktop */}
                 <div className="hidden truncate font-mono text-[11px] text-[var(--muted)] md:block">
                   {owner.owner_id}
                 </div>
 
+                {/* Type desktop */}
                 <div className="hidden md:block">
                   <span className="rounded-full border border-[var(--border)] px-2.5 py-1 text-[11px]">
                     {owner.owner_type ||
@@ -179,11 +191,13 @@ export function Owners() {
                   </span>
                 </div>
 
+                {/* Arrow */}
                 <ArrowRight
-                  size={16}
-                  className="absolute right-5 top-1/2 -translate-y-1/2 text-[var(--muted)] transition-transform group-hover:translate-x-1 md:static md:translate-y-0"
+                  size={17}
+                  className="absolute right-4 top-5 text-[var(--muted)] transition-transform group-hover:translate-x-1 sm:right-5 md:static md:translate-y-0"
                 />
 
+                {/* Desktop quick peek */}
                 {hoveredOwner ===
                   owner.owner_id && (
                   <div
@@ -243,7 +257,9 @@ export function Owners() {
                       className="mt-3 flex w-full items-center gap-2 rounded-xl px-2 py-2 text-xs font-medium text-[var(--primary)] transition hover:bg-[var(--primary-soft)]"
                     >
                       <Building2 size={14} />
-                      <span>Open owner profile</span>
+                      <span>
+                        Open owner profile
+                      </span>
                       <ArrowRight
                         size={13}
                         className="ml-auto"
@@ -257,29 +273,32 @@ export function Owners() {
         )}
       </div>
 
+      {/* Pagination */}
       {totalPages > 1 && (
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="text-xs text-[var(--muted)]">
             Page {page} of {totalPages}
           </div>
 
-          <div className="flex gap-2">
+          <div className="grid grid-cols-2 gap-2 sm:flex">
             <button
+              type="button"
               disabled={page === 1}
               onClick={() =>
                 setPage((value) => value - 1)
               }
-              className="rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2 text-sm disabled:cursor-not-allowed disabled:opacity-40"
+              className="min-h-10 rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2 text-sm transition hover:bg-[var(--background)] disabled:cursor-not-allowed disabled:opacity-40"
             >
               Previous
             </button>
 
             <button
+              type="button"
               disabled={page === totalPages}
               onClick={() =>
                 setPage((value) => value + 1)
               }
-              className="rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2 text-sm disabled:cursor-not-allowed disabled:opacity-40"
+              className="min-h-10 rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2 text-sm transition hover:bg-[var(--background)] disabled:cursor-not-allowed disabled:opacity-40"
             >
               Next
             </button>
