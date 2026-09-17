@@ -3,8 +3,10 @@ import {
   ArrowUpRight,
   Building2,
   Calendar,
+  Mail,
   Copy,
   MapPin,
+  Phone,
   UserRound,
 } from 'lucide-react'
 import { useEffect, useState } from 'react'
@@ -25,8 +27,8 @@ interface Owner {
   property_count: number
   contacts: {
     contact_id: number
-    contact_type: string
-    contact_value: string
+    type: string
+    value: string
     is_primary: boolean
   }[]
 }
@@ -319,6 +321,72 @@ export function OwnerProfile() {
         </div>
       </section>
 
+      {/* Contacts */}
+      <section>
+        <div className="mb-3 px-1">
+          <h2 className="text-sm font-semibold">
+            Contact Information
+          </h2>
+
+          <p className="mt-1 text-xs text-[var(--muted)]">
+            Contact details associated with this owner.
+          </p>
+        </div>
+
+        {owner.contacts.length === 0 ? (
+          <div className="rounded-3xl border border-dashed border-[var(--border)] p-8 text-center text-sm text-[var(--muted)]">
+            No contact information available.
+          </div>
+        ) : (
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {owner.contacts.map((contact) => {
+              const isPhone =
+                contact.type.toLowerCase().includes('mobile') ||
+                contact.type.toLowerCase().includes('landline')
+
+              const isEmail =
+                contact.type.toLowerCase().includes('email')
+
+              const Icon = isPhone
+                ? Phone
+                : isEmail
+                  ? Mail
+                  : UserRound
+
+              return (
+                <div
+                  key={contact.contact_id}
+                  className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-4"
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[var(--primary-soft)] text-[var(--primary)]">
+                      <Icon size={17} />
+                    </div>
+
+                    {contact.is_primary && (
+                      <span className="rounded-full bg-[var(--primary-soft)] px-2.5 py-1 text-[10px] font-medium text-[var(--primary)]">
+                        Primary
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="mt-4">
+                    <div className="text-[10px] font-semibold uppercase tracking-wider text-[var(--muted)]">
+                      {contact.type}
+                    </div>
+
+                    <div className="mt-2 break-all text-sm font-medium">
+                      {contact.value}
+                    </div>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        )}
+      </section>
+
+      
       {/* Properties */}
       <section>
         <div className="mb-3 flex items-end justify-between px-1">
