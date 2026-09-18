@@ -201,7 +201,7 @@ export function Owners() {
                 {hoveredOwner ===
                   owner.owner_id && (
                   <div
-                    className="absolute left-8 top-[calc(100%-8px)] z-30 hidden w-80 rounded-2xl border border-[var(--border)] bg-[var(--surface-elevated)] p-4 shadow-2xl md:block"
+                    className="absolute left-8 bottom-[calc(100%-8px)] z-30 hidden w-80 rounded-2xl border border-[var(--border)] bg-[var(--surface-elevated)] p-4 shadow-2xl md:block"
                     onClick={(event) =>
                       event.stopPropagation()
                     }
