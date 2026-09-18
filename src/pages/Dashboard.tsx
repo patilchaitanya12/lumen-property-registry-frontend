@@ -8,6 +8,7 @@ import {
   useEffect,
   useState,
 } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 import { apiFetch } from '../lib/api'
 
@@ -37,25 +38,31 @@ const cards = [
     key: 'owners',
     label: 'Owners',
     icon: Users,
+    route: '/owners',
   },
   {
     key: 'units',
     label: 'Properties',
     icon: Building2,
+    route: '/properties',
   },
   {
     key: 'locations',
     label: 'Locations',
     icon: MapPin,
+    route: '/locations',
   },
   {
     key: 'orders',
     label: 'Orders',
     icon: Package,
+    route: '/orders',
   },
 ] as const
 
 export function Dashboard() {
+  const navigate = useNavigate()
+
   const [data, setData] =
     useState<DashboardData | null>(
       null,
@@ -95,10 +102,13 @@ export function Dashboard() {
             key,
             label,
             icon: Icon,
+            route,
           }) => (
-            <div
+            <button
+              type="button"
               key={key}
-              className="group min-w-0 rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-4 shadow-[0_1px_2px_rgba(0,0,0,0.03)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg sm:rounded-3xl sm:p-5"
+              onClick={() => navigate(route)}
+              className="group min-w-0 cursor-pointer rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-4 text-left shadow-[0_1px_2px_rgba(0,0,0,0.03)] transition-all duration-300 hover:-translate-y-0.5 hover:border-[var(--primary)]/30 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/30 sm:rounded-3xl sm:p-5"
             >
               <div className="flex items-start justify-between">
                 <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[var(--primary-soft)] text-[var(--primary)] sm:h-10 sm:w-10">
@@ -119,7 +129,7 @@ export function Dashboard() {
                   {label}
                 </div>
               </div>
-            </div>
+            </button>
           ),
         )}
       </section>
